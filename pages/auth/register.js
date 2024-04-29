@@ -12,33 +12,39 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useState } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import { Alert } from "@mui/material";
 
 function Signup() {
   const [isLoading, setIsLoading] = useState(false);
-  const [toggle, setToggle] = useState(true)
-  const [error, setError] = useState('');
+  const [toggle, setToggle] = useState(true);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const router = useRouter();
-  const [username, setUsername] = useState('');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [last_name, setLastname] = useState('');
-  const [company, setCompany] = useState('');
+  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [last_name, setLastname] = useState("");
+  const [company, setCompany] = useState("");
   const [errors, setErrors] = useState({});
-
-
 
   const handleSignup = async () => {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
     try {
       const response = await fetch(`${API_BASE_URL}/users/signup/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, name, email, password, last_name, company })
+        body: JSON.stringify({
+          username,
+          name,
+          email,
+          password,
+          last_name,
+          company,
+        }),
       });
       if (response.ok) {
         const data = await response.json();
@@ -48,7 +54,7 @@ function Signup() {
         throw new Error(JSON.stringify(responseData));
       }
     } catch (error) {
-      throw new Error(error.message || 'Signup error');
+      throw new Error(error.message || "Signup error");
     }
   };
 
@@ -59,22 +65,32 @@ function Signup() {
 
     try {
       const data = await handleSignup();
-      console.log(data)
+      console.log(data);
 
       if (data) {
         setIsLoading(false);
-        router.push('/user');
+        setSuccessMessage(
+          "Successfully submitted! Verify Your Email Address. A verification email has been sent to the address on record. Verify your email address to activate your account."
+        );
+        // Clear form fields
+        setUsername("");
+        setName("");
+        setEmail("");
+        setPassword("");
+        setLastname("");
+        setCompany("");
       } else {
         setIsLoading(false);
         const errorData = JSON.parse(error.message);
-        // setError(errorData.username[0] || errorData.email[0] || 'Signup failed. Please try again.');
-        if(errorData.username) setErrors({...errors, username: errorData.username});
-        if(errorData.email) setErrors({...errors, email: errorData.email});
-        if(errorData.password) setErrors({...errors, password: errorData.password});
+        if (errorData.username)
+          setErrors({ ...errors, username: errorData.username });
+        if (errorData.email) setErrors({ ...errors, email: errorData.email });
+        if (errorData.password)
+          setErrors({ ...errors, password: errorData.password });
       }
     } catch (error) {
       setIsLoading(false);
-      setError(error.message || 'Signup error');
+      setError(error.message || "Signup error");
     }
   };
 
@@ -95,7 +111,8 @@ function Signup() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        {error && <div style={{ color: 'red' }}>{error}</div>}
+        {successMessage && <Alert severity="success">{successMessage}</Alert>}
+        {error && <div style={{ color: "red" }}>{error}</div>}
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -132,7 +149,6 @@ function Signup() {
                 name="company"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
-
               />
             </Grid>
             <Grid item xs={12}>
@@ -146,7 +162,9 @@ function Signup() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
-              {errors && errors?.username && <Alert severity="error">{errors?.username?.join(' ')}</Alert>}
+              {errors && errors?.username && (
+                <Alert severity="error">{errors?.username?.join(" ")}</Alert>
+              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -163,7 +181,9 @@ function Signup() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              {errors && errors?.email && <Alert severity="error">{errors?.email?.join(' ')}</Alert>}
+              {errors && errors?.email && (
+                <Alert severity="error">{errors?.email?.join(" ")}</Alert>
+              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -177,12 +197,16 @@ function Signup() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {errors && errors?.password && <Alert severity="error">{errors?.password?.join(' ')}</Alert>}
+              {errors && errors?.password && (
+                <Alert severity="error">{errors?.password?.join(" ")}</Alert>
+              )}
             </Grid>
             <div>
               <ul>
                 <li>Must be at least 8 characters long</li>
-                <li>Must contain an uppercase and a lowercase letter (A-Z, a-z)</li>
+                <li>
+                  Must contain an uppercase and a lowercase letter (A-Z, a-z)
+                </li>
                 <li>Can contain a special character (!, %, @, #.)</li>
               </ul>
             </div>
@@ -199,7 +223,13 @@ function Signup() {
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" onClick={() => setToggle(!toggle)} />}
+                control={
+                  <Checkbox
+                    value="allowExtraEmails"
+                    color="primary"
+                    onClick={() => setToggle(!toggle)}
+                  />
+                }
                 label="I accept the terms and conditions of KNHTS."
               />
             </Grid>
@@ -211,7 +241,7 @@ function Signup() {
             disabled={toggle}
             sx={{ mt: 3, mb: 2 }}
           >
-            {isLoading ? 'Loading...' : 'Submit'}
+            {isLoading ? "Loading..." : "Submit"}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
