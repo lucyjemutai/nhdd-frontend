@@ -3,16 +3,17 @@ import { useRouter } from "next/router";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
 const VerifyEmail = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const { token } = router.query;
+    const { path } = router.query;
 
     // If token is present, send a request to backend API to verify the email
-    if (token) {
-      fetch(`/api/verify-email?token=${token}`)
+    if (path) {
+      fetch(`${API_BASE_URL}/users` + path)
         .then((response) => {
           if (response.ok) {
             router.push("/auth/login");
