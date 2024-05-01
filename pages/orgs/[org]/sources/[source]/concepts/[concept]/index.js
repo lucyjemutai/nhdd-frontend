@@ -95,7 +95,7 @@ function ConceptDetail() {
                         {/* breadcrumb: org > source > domain > subdomain > concept */}
                         <Link href={`/orgs/${org}/sources/`} style={{ textDecoration: "none", color: "#1651B6" }} title="Org" className="breadcrumb-item"> {org} </Link>
                         <Link href={`/orgs/${org}/sources/${source}`} style={{ textDecoration: "none", color: "#1651B6" }} title="Source" className="breadcrumb-item"> {source} </Link>
-                        <span title="Concept ID" className="breadcrumb-item" style={{ textDecoration: "none", color: "#777" }}> {conceptDetail.id} </span>
+                        <span title="Concept ID" className="breadcrumb-item" style={{ textDecoration: "none", color: "#777" }}> {conceptDetail.id} | {conceptDetail.concept_class} | {conceptDetail.datatype}</span>
                     </Box>
 
                     {/* Names */}
