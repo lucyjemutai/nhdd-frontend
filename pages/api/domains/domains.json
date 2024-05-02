@@ -81,7 +81,10 @@
     {
         "id": "supply-chain",
         "name": "Supply Chain Management",
-        "apiUrls": [],
+        "apiUrls": [
+            "/orgs/MOH-KENYA/sources/LSC/"
+        ],
+         
         "icon": "supply",
         "metadata": {}
     },
