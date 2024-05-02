@@ -1,143 +1,494 @@
 import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import Box from '@mui/material/Box';
-import AppBar from '@mui/material/AppBar';
-import { Button, IconButton, Tabs, TextField, Toolbar, Typography } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
+import Box from "@mui/material/Box";
+import AppBar from "@mui/material/AppBar";
+import {
+  Button,
+  CircularProgress,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tabs,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import Navbar from "@/components/Navbar";
 import { GitHub, Search } from "@mui/icons-material";
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import React, { useState } from "react";
+import Tab from "@mui/material/Tab";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-
+import { useRouter } from "next/router";
+import Footer from "@/components/footer";
+import VerifyEmail from "@/pages/auth/verifyEmail";
+import { redirect } from "next/navigation";
 const inter = Inter({ subsets: ["latin"] });
-
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export default function Home() {
-
-    const [activeTab, setActiveTab] = useState('1');
-
-    const [domains, setDomains] = useState([
-        { "id": "diagnostics", "name": "Diagnostic Information", "icon": "microscope" },
-        { "id": "products-technologies", "name": "Products & Technologies", "icon": "devices" },
-        { "id": "investigations", "name": "Investigations", "icon": "stethoscope" },
-        { "id": "procedures-services", "name": "Procedures & Services", "icon": "syringe" },
-        { "id": "billing-claims", "name": "Billing & eClaims Management", "icon": "finance" },
-        { "id": "hrh", "name": "Human Resources for Health", "icon": "doctor" },
-        { "id": "devices-infra", "name": "Devices & Infrastructure", "icon": "devices" },
-        { "id": "supply-chain", "name": "Supply Chain Management", "icon": "medstore" },
-    ]);
-
-    const handleTabChange = (event, newValue) => {
-        setActiveTab(newValue);
+  const router = useRouter();
+  if (typeof window !== "undefined") {
+    let path = window.location.hash.split("?")[0];
+    if (path && path.startsWith("#/accounts")) {
+      path = path.split("#/accounts").pop();
+      router.push(`/auth/verifyEmail?path=${path}`);
     }
-    return (
-        <>
-            <Head>
-                <title>MOH KNHTS</title>
-                <meta name="description" content="MOH KNHTS" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <main>
-                <Box style={{ backgroundColor: '#1651B6' }} borderRadius={'8px'} sx={{ flexGrow: 1, flexDirection: 'column', px: { xs: '1em', md: '3em' }, py: { xs: '2em', md: '4em' } }}>
-                    <Box borderRadius={'8px'} sx={{ px: { xs: '1em', md: '3em' }, py: { xs: '1em', md: '3em' } }}>
-                        <Typography variant="h3" sx={{ display: { xs: 'none', md: 'flex' } }} fontWeight={"bold"} marginBottom={'5px'} color={'#fff'}> Welcome to the <br />Kenya National Health <br />Data Dictionary </Typography>
-                        <Typography variant="h4" sx={{ display: { xs: 'flex', md: 'none' } }} fontWeight={"bold"} marginBottom={'5px'} color={'#fff'}> Welcome to the Kenya National Health Data Dictionary </Typography>
-                        <Typography variant="h6" color={'#fff'}>The reference point for health information standards supporting healthcare activities in Kenya.</Typography>
-                    </Box>
-                    <Box width={"100%"} sx={{ display: 'flex' }}>
-                        <TextField sx={{ flexGrow: 1, backgroundColor: '#fcfcfc', borderRadius: '8px' }} id="hero-search" label="Search any concept, institution, domain, sub-domain etc." variant="outlined" color={"info"} />
-                        <Button sx={{ borderRadius: '8px', marginLeft: '10px', backgroundColor: '#fff', color: '#333' }} variant="contained" color="primary">
-                            <Search />
-                        </Button>
-                    </Box>
-                </Box>
-
-                <Typography variant="h4" my={4} textAlign={'center'} fontWeight={"bold"} marginBottom={'5px'}> Terminology Resources </Typography>
-
-                <Box sx={{ width: '100%', typography: 'body1' }}>
-                    <TabContext value={activeTab}>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <TabList onChange={handleTabChange} centered variant="standard" aria-label="lab API tabs example">
-                                <Tab label="Concept Domains" value="1" />
-                                <Tab label="Sources" value="2" />
-                                <Tab label="Collections" value="3" />
-                            </TabList>
+  }
+  const [activeTab, setActiveTab] = useState("1");
+  const [loadingDomains, setLoadingDomains] = useState(true);
+  const [domains, setDomains] = useState([]);
+  const [loadingCollections, setLoadingCollections] = useState(true);
+  const [sources, setSources] = useState([]);
+  const [collections, setCollections] = useState([]);
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = (event) => {
+    event.preventDefault();
+    router.push(`/search/?q=${searchTerm}`);
+  };
+  const fetchDomains = () => {
+    setLoadingDomains(true);
+    fetch(`/api/domains`)
+      .then((res) => res.json())
+      .then((data) => {
+        let srcs = [];
+        setDomains([
+          ...data,
+          { id: "/", name: "View all domains", icon: "all" },
+        ]);
+        data.forEach((domain) => {
+          let domain_sources = Array.from(domain?.apiUrls, (d) => {
+            let d_ = d.split("/").filter((f) => f);
+            let src = d_[d_.length - 3] + "/" + d_[d_.length - 1];
+            return src;
+          });
+          srcs = srcs.concat(domain_sources);
+        });
+        setSources([...new Set(srcs)]);
+        setLoadingDomains(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoadingDomains(false);
+      });
+  };
+  const fetchCollections = () => {
+    setLoadingCollections(true);
+    fetch(`${API_BASE_URL}/collections/?limit=20`)
+      .then((res) => res.json())
+      .then((data) => {
+        setCollections(data);
+        setLoadingCollections(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoadingCollections(false);
+      });
+  };
+  useEffect(() => {
+    fetchDomains();
+    fetchCollections();
+  }, []);
+  return (
+    <>
+      <Head>
+        <title>MOH KNHTS</title>
+        <meta name="description" content="MOH KNHTS" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <main>
+        <Box
+          style={{ backgroundColor: "#1651B6" }}
+          borderRadius={"8px"}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            px: { xs: "1em", md: "0.3em" },
+            py: { xs: "1em", md: "0.3em" },
+          }}
+        >
+          <Box
+            borderRadius={"8px"}
+            sx={{ px: { xs: "1em", md: "2em" }, py: { xs: "1em", md: "1em" } }}
+          >
+            <Typography
+              variant="h3"
+              sx={{ display: { xs: "none", md: "flex" } }}
+              fontWeight={"bold"}
+              marginBottom={"1px"}
+              color={"#fff"}
+            >
+              Kenya National Health Terminology Services
+            </Typography>
+            <Typography
+              variant="h4"
+              sx={{ display: { xs: "flex", md: "none" } }}
+              fontWeight={"bold"}
+              marginBottom={"5px"}
+              color={"#fff"}
+            ></Typography>
+            <Typography variant="h6" color={"#fff"}>
+              This is a platform which provides real-time electronic access to
+              terminological resources and straightforward integration with{" "}
+              <br></br>independent software platforms.
+            </Typography>
+          </Box>
+          <Box
+            width={{ sm: "70%", md: "30%" }}
+            sx={{ display: "flex" }}
+            noValidate
+          >
+            <TextField
+              onChange={(e) => setSearchTerm(e.target.value)}
+              sx={{
+                flexGrow: 1,
+                backgroundColor: "#fcfcfc",
+                borderRadius: "8px",
+              }}
+              id="searchTerm"
+              name="searchTerm"
+              placeholder="Search the Terminology Services"
+              variant="outlined"
+              color={"info"}
+            />
+            <Button
+              onClick={handleSearch}
+              sx={{
+                borderRadius: "8px",
+                marginLeft: "10px",
+                backgroundColor: "#fff",
+                color: "#333",
+              }}
+              variant="contained"
+              color="primary"
+            >
+              <Search />
+            </Button>
+          </Box>
+        </Box>
+        <Box sx={{ width: "100%", typography: "body1" }}>
+          <TabContext value={activeTab}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <TabList
+                onChange={handleTabChange}
+                centered
+                variant="standard"
+                aria-label="lab API tabs example"
+              >
+                <Tab label="Concept Domains" value="1" />
+                <Tab label="Sources" value="2" />
+                <Tab label="Collections" value="3" />
+              </TabList>
+            </Box>
+            <TabPanel value="1">
+              <Box
+                sx={{ flexGrow: "1", display: "flex", flexDirection: "column" }}
+              >
+                {loadingDomains ? (
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 3,
+                      minHeight: "400px",
+                    }}
+                  >
+                    <CircularProgress />
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
+                      gap: 2,
+                    }}
+                  >
+                    {domains.map((domain) => (
+                      <Box
+                        key={domain.id}
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          gap: 1,
+                          my: { xs: "1", md: "2" },
+                          px: 1,
+                          py: 1,
+                          borderRadius: "5px",
+                          backgroundColor: "#fcfcfc",
+                          border: "1px solid #ccc",
+                          borderRadius: "8px",
+                          ":hover": {
+                            backgroundColor: "#f0f0f0",
+                            cursor: "pointer",
+                            color: "#18C90D",
+                          },
+                          ":active": {
+                            backgroundColor: "#f0f0f0",
+                            cursor: "pointer",
+                            color: "#18C90D",
+                          },
+                          color: "#1651B6",
+                        }}
+                        onClick={(ev) => {
+                          ev.preventDefault();
+                          router.push(`/orgs/MOH-KENYA/domains/${domain.id}`);
+                        }}
+                      >
+                        <Image
+                          src={"/assets/images/" + domain.icon + ".png"}
+                          alt={domain.name}
+                          width={50}
+                          height={50}
+                        />
+                        <Box sx={{ display: "flex", flexDirection: "column" }}>
+                          <Typography variant="h6">{domain.name}</Typography>
+                          {domain.sources_data?.filter(
+                            (d) => d && JSON.stringify(d) !== "[]"
+                          )?.length > 0 ? (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                width: "100%",
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  gap: 1,
+                                  fontSize: "0.9em",
+                                  mx: 1,
+                                  mb: 1,
+                                }}
+                              >
+                                <span className="text-stone-500">
+                                  Source(s):
+                                </span>{" "}
+                                <span
+                                  style={{ fontWeight: "500", color: "black" }}
+                                >
+                                  {domain.sources_data[0]?.short_code || "-"}
+                                </span>
+                              </Box>
+                              {/* <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, fontSize: '0.9em', mx: 1, mb: 1 }}>
+                                                    <span className='text-stone-500'>Mappings:</span> <span style={{ fontWeight: '500', color: 'black' }}>{new Intl.NumberFormat().format(domain.sources_data[0]?.summary?.active_mappings) || 0}</span>
+                                                </Box> */}
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  gap: 1,
+                                  fontSize: "0.9em",
+                                  mx: 1,
+                                  mb: 1,
+                                }}
+                              >
+                                <span className="text-stone-500">
+                                  Concepts:
+                                </span>{" "}
+                                <span
+                                  style={{ fontWeight: "500", color: "black" }}
+                                >
+                                  {new Intl.NumberFormat().format(
+                                    domain.sources_data[0]?.summary
+                                      ?.active_concepts
+                                  ) || 0}
+                                </span>
+                              </Box>
+                            </Box>
+                          ) : (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: 1,
+                                width: "100%",
+                                fontSize: "0.8em",
+                              }}
+                            >
+                              <span style={{ fontWeight: "500" }}>&nbsp;</span>
+                            </Box>
+                          )}
                         </Box>
-                        <TabPanel value="1">
-                            <Box sx={{ flexGrow: '1', display: 'flex', flexDirection: 'column' }}>
-                                <Typography variant="h5">Concept Dictionary</Typography>
-                                <Box sx={{
-                                    display: 'grid',
-                                    gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
-                                    gap: 2,
-                                }}>
-                                    {domains.map((domain) => (
-                                        <Box key={domain.id} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', my: {xs: '1', md: '2'}, px: 2, py: 3, borderRadius: '5px', backgroundColor: '#fcfcfc', border: '1px solid #ccc', borderRadius: '8px' }}>
-                                            <Typography variant="h6">{domain.name}</Typography>
-                                            <Image src={"/assets/images/" + domain.icon + ".png"} alt={domain.name} width={50} height={50} />
-                                        </Box>
-                                    ))}
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }} >
-                                        <Link href="/domains" style={{ color: '#1651B6', textDecoration: 'none' }}> View all domains &hellip; </Link>
-                                    </Box>
-                                </Box>
-                            </Box>
-                        </TabPanel>
-                        <TabPanel value="2">
-                            <Box sx={{ flexGrow: '1', display: 'flex', flexDirection: 'column' }}>
-                                <Typography variant="h5">Sources</Typography>
-
-                            </Box>
-                        </TabPanel>
-                        <TabPanel value="3">
-                            <Box sx={{ flexGrow: '1', display: 'flex', flexDirection: 'column' }}>
-                                <Typography variant="h5">Collections</Typography>
-
-                            </Box>
-                        </TabPanel>
-                    </TabContext>
-                </Box>
-
-
-                <Box style={{ backgroundColor: '#121212' }} borderRadius={'8px'} sx={{ display: 'flex', flexGrow: 1, flexDirection: { xs: 'column', md: 'row' }, px: { xs: '1em', md: '2em' }, py: { xs: '2em', md: '3em' }, gap: 3 }}>
-                    <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <Typography variant="h4" color={'#fff'}> Can't find what you're looking for? </Typography>
-                        <Typography variant="h6" color={'#fff'}> You can submit a request for a concept to be added, or visit our <Link href={'/support'} style={{ color: 'skyblue' }}>help &amp; support page</Link> </Typography>
-                    </Box>
-                    <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Button size="large" sx={{ borderRadius: '11px', marginLeft: '10px', backgroundColor: '#fff', color: '#333' }} variant="contained" color="primary">
-                            Submit Request
-                        </Button>
-                    </Box>
-                </Box>
-                <Box style={{ backgroundColor: '#fcfcfc' }} my={1} sx={{ display: 'flex', flexGrow: 1, flexDirection: 'row', alignItems: 'center', px: { xs: '1em', md: '2em' }, py: { xs: '1em', md: '2em' }, gap: 2 }}>
-                    <Box>
-                        <img src="/assets/images/knhdd.png" alt="MoH KNHTS" width={'auto'} height={60} />
-                    </Box>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, flexDirection: 'row', justifyContent: 'center', gap: 2 }}>
-                        <Link style={{ fontWeight: '500', textDecoration: 'none', color: '#334', fontSize: '1.1em' }} href={'/'}>Resources</Link>
-                        <Link style={{ fontWeight: '500', textDecoration: 'none', color: '#334', fontSize: '1.1em' }} href={'/'}>About</Link>
-                        <Link style={{ fontWeight: '500', textDecoration: 'none', color: '#334', fontSize: '1.1em' }} href={'/'}>Knowledge base</Link>
-                        <Link style={{ fontWeight: '500', textDecoration: 'none', color: '#334', fontSize: '1.1em' }} href={'/'}>Help &amp; guides</Link>
-                    </Box>
-                    <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}} px={2}>
-                        <Link style={{ fontWeight: '500', textDecoration: 'none', color: '#334', fontSize: '1.1em' }} href={'/'}>
-                            <GitHub />
-                        </Link>
-                    </Box>
-                </Box>
-                <Box sx={{ borderTop: '3px solid #333', py: 3, flexGrow: 1, display: { xs: 'none', md: 'flex' }, flexDirection: 'row', justifyContent: 'center', gap: 3 }}>
-                    <Typography style={{ textDecoration: 'none', color: '#777' }}>&copy; Ministry of Health</Typography>
-                    <Link style={{ textDecoration: 'none', color: '#445' }} href={'/'}>Privacy Policy</Link>
-                    <Link style={{ textDecoration: 'none', color: '#445' }} href={'/'}>Terms of use</Link>
-                    <Link style={{ textDecoration: 'none', color: '#445' }} href={'/'}>Contact</Link>
-                </Box>
-            </main>
-        </>
-    );
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+              </Box>
+            </TabPanel>
+            <TabPanel value="2">
+              <Box
+                sx={{ flexGrow: "1", display: "flex", flexDirection: "column" }}
+              >
+                <Typography variant="h4">Sources</Typography>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: "bold" }}>
+                          ORGANIZATION
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>
+                          SOURCE
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {sources.map((source, index) => (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            ":hover": { color: "#1651B6", cursor: "pointer" },
+                          }}
+                          onClick={(e) =>
+                            router.push(
+                              `/orgs/${source?.split("/")[0]}/sources/${
+                                source?.split("/")[1]
+                              }`
+                            )
+                          }
+                        >
+                          <TableCell>{source?.split("/")[0]}</TableCell>
+                          <TableCell>{source?.split("/")[1]}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+            </TabPanel>
+            <TabPanel value="3">
+              <Box
+                sx={{ flexGrow: "1", display: "flex", flexDirection: "column" }}
+              >
+                <Typography variant="h4">Collections</Typography>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: "bold" }}>ID</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>Owner</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>
+                          Collection Type
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>
+                          Created at
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {collections.map((coll, index) => (
+                        <TableRow
+                          key={index}
+                          sx={
+                            {
+                              // ":hover": { color: '#1651B6', cursor: 'pointer' }
+                            }
+                          }
+                          onClick={(e) => {
+                            router.push(coll.url);
+                          }}
+                        >
+                          <TableCell>{coll.id}</TableCell>
+                          <TableCell>{coll.name}</TableCell>
+                          <TableCell>{coll.owner}</TableCell>
+                          <TableCell>{coll.collection_type}</TableCell>
+                          <TableCell>
+                            {new Date(coll.created_at).toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+            </TabPanel>
+          </TabContext>
+        </Box>
+        <Box
+          style={{ backgroundColor: "#1651B6" }}
+          borderRadius={"8px"}
+          sx={{
+            display: "flex",
+            flexGrow: 1,
+            flexDirection: { xs: "column", md: "row" },
+            px: { xs: "1em", md: "0.5em" },
+            py: { xs: "2em", md: "0.5em" },
+            gap: 1,
+          }}
+        >
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "column",
+              // gap: 2,
+              px: 2,
+            }}
+          >
+            <Typography
+              variant="h5"
+              fontWeight={"600"}
+              sx={{ mb: 0 }}
+              color={"#fff"}
+            >
+              {" "}
+              Can't find what you're looking for?{" "}
+            </Typography>
+            <Typography variant="h6" color={"#fff"}>
+              {" "}
+              You can submit a request for a concept to be added, or visit our{" "}
+              <Link href={"/help"} style={{ color: "skyblue" }}>
+                help &amp; support page
+              </Link>{" "}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              flexGrow: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              size="large"
+              sx={{
+                borderRadius: "11px",
+                marginLeft: "10px",
+                backgroundColor: "#fff",
+                color: "#333",
+              }}
+              variant="contained"
+              color="primary"
+              href={"/RequestConcept"}
+            >
+              Submit Request
+            </Button>
+          </Box>
+        </Box>
+        <Footer />
+      </main>
+    </>
+  );
 }

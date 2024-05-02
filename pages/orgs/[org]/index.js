@@ -1,9 +1,15 @@
-import React from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect } from 'react'
 
-function OrgDetails() {
+function ConceptsList() {
+  const router = useRouter()
+  const {org} = router.query
+  useEffect(() => {
+    router.push(`/orgs/${org}/sources`)
+  }, [])
   return (
-    <div>OrgDetails</div>
+    <div>Loading...</div>
   )
 }
 
-export default OrgDetails
+export default ConceptsList

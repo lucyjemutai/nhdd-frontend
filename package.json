@@ -13,13 +13,22 @@
     "@emotion/react": "^11.11.3",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/icons-material": "^5.15.6",
+    "@mui/joy": "^5.0.0-beta.29",
     "@mui/lab": "^5.0.0-alpha.162",
     "@mui/material": "^5.15.6",
     "@mui/material-nextjs": "^5.15.6",
+    "@mui/x-charts": "^6.19.3",
     "@mui/x-data-grid": "^6.19.2",
+    "js-cookie": "^3.0.5",
     "next": "14.1.0",
+    "next-transpile-modules": "^10.0.1",
+    "nextjs-progressbar": "^0.0.16",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "swr": "^2.2.4",
+    "yarn": "^1.22.21"
   }
 }

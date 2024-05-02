@@ -1,8 +1,18 @@
 import React from 'react'
+import Dashboard from './dashboard'
+import Head from 'next/head'
 // Authenticated user landing page
 function UserLanding() {
     return (
-        <div>UserLanding</div>
+        <>
+
+            <Head>
+                <title>MOH KNHTS | Dashboard</title>
+                <meta name="description" content="EPT" />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <Dashboard />
+        </>
     )
 }
 

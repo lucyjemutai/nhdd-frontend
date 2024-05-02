@@ -1,0 +1,100 @@
+[
+  {
+    "id": "classification-of-diseases",
+    "name": "Classification of Diseases",
+    "apiUrls": ["/orgs/WHO/sources/ICD-11/"],
+    "icon": "stethoscope",
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=chapter",
+      "cascadeQueryParam": "$cascade/?cascadeLevels=1&view=hierarchy&reverse=true&includeRetired=false"
+    }
+  },
+  {
+    "id": "products-technologies",
+    "name": "Health Products and Technologies (HPT)",
+    "apiUrls": ["/orgs/MOH-KENYA/sources/PPB/"],
+    "icon": "xray",
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=Subdomain",
+      "cascadeQueryParam": "$cascade/?view=hierarchy&reverse=true&includeRetired=false"
+    }
+  },
+  {
+    "id": "diagnostic-services",
+    "name": "Diagnostic Services (Lab and Imaging)",
+    "apiUrls": ["/orgs/MOH-KENYA/sources/NPHL/"],
+    "icon": "microscope2",
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=Subdomain",
+      "cascadeQueryParam": "$cascade/?view=hierarchy&reverse=true&includeRetired=false"
+    }
+  },
+  {
+    "id": "procedures",
+    "name": "Health Procedures",
+    "apiUrls": ["/orgs/WHO/sources/ICHI/"],
+    "icon": "syring",
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=block&limit=500",
+      "cascadeQueryParam": "$cascade/?view=hierarchy&reverse=true&includeRetired=false"
+    }
+  },
+  {
+    "id": "billing",
+    "name": "Billing & eClaims Management",
+    "apiUrls": [],
+    "icon": "bill",
+    "metadata": {}
+  },
+  {
+    "id": "hrh",
+    "name": "Human Resources for Health (HRH)",
+    "apiUrls": ["/orgs/MOH-KENYA/sources/HRH/"],
+    "icon": "hr",
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=Subdomain",
+      "cascadeQueryParam": "$cascade/?cascadeLevels=1&view=hierarchy&reverse=true&includeRetired=false"
+    }
+  },
+  {
+    "id": "health-infrastructure",
+    "name": "Health Infrastructure",
+    "apiUrls": ["/orgs/MOH-KENYA/sources/DHI/"],
+    "icon": "hospital",
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=Subdomain",
+      "cascadeQueryParam": "$cascade/?cascadeLevels=1&view=hierarchy&reverse=true&includeRetired=false"
+    }
+  },
+  {
+    "id": "supply-chain",
+    "name": "Supply Chain Management",
+    "apiUrls": ["/orgs/MOH-KENYA/sources/LSC/"],
+
+    "icon": "supply",
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=Subdomain",
+      "cascadeQueryParam": "$cascade/?cascadeLevels=1&view=hierarchy&reverse=true&includeRetired=false"
+    }
+  },
+  {
+    "id": "community-health",
+    "name": "Community Health",
+    "apiUrls": ["/orgs/MOH-KENYA/collections/CHC/"],
+    "icon": "communit",
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=Subdomain",
+      "cascadeQueryParam": "$cascade/?cascadeLevels=1&view=hierarchy&reverse=true&includeRetired=false"
+    }
+  },
+  {
+    "id": "functioning-disablility",
+    "name": "Functioning Disability",
+    "apiUrls": ["/orgs/WHO/sources/ICF/"],
+    "icon": "disab",
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=Subdomain",
+      "cascadeQueryParam": "$cascade/?cascadeLevels=1&view=hierarchy&reverse=true&includeRetired=false"
+    }
+  }
+]
