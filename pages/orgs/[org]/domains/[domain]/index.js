@@ -56,33 +56,35 @@ function OrgDomainsList() {
   const fetchConcepts = (subdomain) => {
     setIsLoadingConcepts(true);
     setIsLoading(true);
-    let url = "/api/concepts"; //    ?domain=' + domain;
+    let url = "/api/concepts/?q="; //    ?domain=' + domain;
     if (subdomain) url = url + "?subdomainurl=" + subdomain + "&page=" + page;
     fetch(url)
-    .then((response) => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
       })
       .then((data) => {
-          if (data) {
-            let filteredConcepts = data?.concepts?.filter(concept => concept.type === 'Concept')
-            setConcepts(filteredConcepts);
-            setCurrentConcepts(filteredConcepts);
+        if (data) {
+          let filteredConcepts = data?.concepts?.filter(
+            (concept) => concept.type === "Concept"
+          );
+          setConcepts(filteredConcepts);
+          setCurrentConcepts(filteredConcepts);
 
-            setTotalPages(data?.data?.conceptsMeta?.pagecount ?? 1);
-            setRowsPerPage(data?.data?.conceptsMeta?.pagesize ?? 20);
-            setPage(data?.data?.conceptsMeta?.currentpage ?? 1);
-          }
+          setTotalPages(data?.data?.conceptsMeta?.pagecount ?? 1);
+          setRowsPerPage(data?.data?.conceptsMeta?.pagesize ?? 20);
+          setPage(data?.data?.conceptsMeta?.currentpage ?? 1);
+        }
       })
       .catch((err) => {
-        console.error('error::', err);
+        console.error("error::", err);
       })
       .finally(() => {
         setIsLoadingConcepts(false);
         setIsLoading(false);
-      });;
+      });
   };
   const onSubdomainClick = (subdomain) => {
     setPage(1);
@@ -102,10 +104,9 @@ function OrgDomainsList() {
     // go to /search?q=searchTerm&owner=org
     const search_url = `/search?q=${term}&owner=${domainData?.data?.owner}&source=${domainData?.data?.id}`;
     router.push(search_url);
-  }
+  };
 
   const fetchDomainData = (page = 1) => {
-
     fetch("/api/domains/" + domain + "?includeConcepts=true&page=" + page)
       .then((response) => {
         if (!response.ok) {
@@ -137,7 +138,6 @@ function OrgDomainsList() {
         console.error("error::", err);
       })
       .finally(() => {
-
         setIsLoading(false);
       });
   };
