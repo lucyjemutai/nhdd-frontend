@@ -56,7 +56,8 @@ function OrgDomainsList() {
   const fetchConcepts = (subdomain) => {
     setIsLoadingConcepts(true);
     setIsLoading(true);
-    let url = "/api/concepts/?q="; //    ?domain=' + domain;
+    //let url = "/api/concepts/?q="; //    ?domain=' + domain;
+    let url = "/api/concepts/"; //    ?domain=' + domain;
     if (subdomain) url = url + "?subdomainurl=" + subdomain + "&page=" + page;
     fetch(url)
       .then((response) => {

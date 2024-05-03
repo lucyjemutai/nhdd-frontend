@@ -42,9 +42,12 @@
   {
     "id": "billing",
     "name": "Billing & eClaims Management",
-    "apiUrls": [],
+    "apiUrls": ["/orgs/MOH-KENYA/sources/DDH/"],
     "icon": "bill",
-    "metadata": {}
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=Subdomain",
+      "cascadeQueryParam": "$cascade/?cascadeLevels=1&view=hierarchy&reverse=true&includeRetired=false"
+    }
   },
   {
     "id": "hrh",
