@@ -62,9 +62,9 @@ function Login() {
             type: "success",
             message: "Login successful",
           });
-          // setTimeout(() => {
-          //     router.push('/user/', undefined, { unstable_skipClientCache: true })
-          // }, 2000);
+          setTimeout(() => {
+              router.push('/user/', undefined, { unstable_skipClientCache: true })
+          }, 2000);
         } else {
           setStatus({
             ...data,

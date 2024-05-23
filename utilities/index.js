@@ -69,7 +69,7 @@ export const doLogin = async (username, password, rtr) => {
           .then((data) => {
             if (data?.username) {
               // store user in cookie
-              Cookies.set("user", JSON.stringify(userData), {
+              Cookies.set("user", JSON.stringify(data?.username), {
                 path: "/",
                 expires: 7 /* additional options */,
               });
@@ -78,7 +78,7 @@ export const doLogin = async (username, password, rtr) => {
               if (rtr) {
                 rtr.push("/user", undefined, {
                   unstable_skipClientCache: true,
-                });
+                });              
               } else {
                 window.location.pathname = "/user";
               }
