@@ -78,7 +78,7 @@ export const doLogin = async (username, password, rtr) => {
               if (rtr) {
                 rtr.push("/user", undefined, {
                   unstable_skipClientCache: true,
-                });              
+                });             
               } else {
                 window.location.pathname = "/user";
               }
