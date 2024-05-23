@@ -143,7 +143,7 @@ function CollectionConcepts() {
                                                     <TableCell>{row.datatype}</TableCell>
                                                     <TableCell>{row.collection}</TableCell>
                                                     <TableCell>{row.retired}</TableCell>
-                                                    <TableCell>{formatdDate(formatDrow.version_created_on)}</TableCell>
+                                                    <TableCell>{formatdDate(row.version_created_on)}</TableCell>
                                                     <TableCell>{formatdDate(row.version_updated_on)}</TableCell>
                                                 </TableRow>
                                             )) : <TableRow><TableCell colSpan={9}>No data</TableCell></TableRow>}

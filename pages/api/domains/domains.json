@@ -10,9 +10,19 @@
     }
   },
   {
-    "id": "products-technologies",
-    "name": "Health Products and Technologies (HPT)",
-    "apiUrls": ["/orgs/MOH-KENYA/sources/PPB/"],
+    "id": "hpt-pharmaceuticals",
+    "name": "HPT - Pharmaceuticals",
+    "apiUrls": ["/orgs/MOH-KENYA/sources/PPB_P/"],
+    "icon": "xray",
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=Subdomain",
+      "cascadeQueryParam": "$cascade/?view=hierarchy&reverse=true&includeRetired=false"
+    }
+  },
+  {
+    "id": "hpt-non-pharmaceuticals",
+    "name": "HPT - Non-pharmaceuticals",
+    "apiUrls": ["/orgs/MOH-KENYA/sources/PPB_NP/"],
     "icon": "xray",
     "metadata": {
       "subdomainQueryParam": "conceptClass=Subdomain",
