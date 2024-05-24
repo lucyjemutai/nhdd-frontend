@@ -16,6 +16,7 @@ function Login() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showSignInButton, setShowSignInButton] = useState(true);
   const router = useRouter();
+  const [showAlert, setShowAlert] = useState(false);
   let [loading, setLoading] = useState(true);
   let [status, setStatus] = useState({
     type: "info",
@@ -53,26 +54,44 @@ function Login() {
         };
     */
 
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false); // Hide the alert after 2 seconds
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
+
   const handleLogin = async (e) => {
-    // do login
-    doLogin(username, password, router)
-      .then((data) => {
-        if (data.status === true) {
-          setStatus({
-            type: "success",
-            message: "Login successful",
-          });
-          setTimeout(() => {
-              router.push('/user/', undefined, { unstable_skipClientCache: true })
-          }, 2000);
-        } else {
-          setStatus({
-            ...data,
-            type: "danger",
-          });
-        }
-      })
-      .catch((error) => {});
+    e.preventDefault();
+    if (username.trim() === "" || password.trim() === "") {
+      alert("Please fill in all the required fields.");
+      return;
+    }
+
+    try {
+      const data = await doLogin(username, password, router);
+
+      if (data.status === true) {
+        router.push("/auth/user/", undefined, {
+          unstable_skipClientCache: true,
+        });
+      } else {
+        setStatus({
+          type: "danger",
+          message: "Login failed. Please check your credentials and try again.",
+        });
+        setShowAlert(true);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setStatus({
+        type: "danger",
+        message: "An unexpected error occurred. Please try again later.",
+      });
+      setShowAlert(true);
+    }
   };
 
   const handleSendButtonClick = () => {
@@ -161,20 +180,20 @@ function Login() {
         }}
       >
         {/* {status && status.message && ["warning", "success", "danger"].includes(status.type) && ( */}
-        <Alert
-          severity={
-            status.type == "success"
-              ? "success"
-              : status.type == "warning"
-              ? "warning"
-              : status.type == "error"
-              ? "error"
-              : "info"
-          }
-          style={{ px: 4 }}
-        >
-          {status.message}
-        </Alert>
+        {showAlert && (
+          <Alert
+            severity={
+              status && status.type === "success"
+                ? "success"
+                : status && status.type === "warning"
+                ? "warning"
+                : "error" // Set "error" severity for status.type === "error" or if status.type is undefined
+            }
+            style={{ px: 4 }}
+          >
+            {status && status.message}
+          </Alert>
+        )}
         {/* )} */}
       </Box>
       <div style={{ display: "flex", minHeight: "80vh" }}>
