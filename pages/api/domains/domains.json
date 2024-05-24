@@ -21,7 +21,7 @@
   },
   {
     "id": "hpt-non-pharmaceuticals",
-    "name": "HPT - Non-pharmaceuticals",
+    "name": "HPT - Medical Devices",
     "apiUrls": ["/orgs/MOH-KENYA/sources/PPB_NP/"],
     "icon": "xray",
     "metadata": {
