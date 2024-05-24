@@ -13,7 +13,7 @@
     "id": "hpt-pharmaceuticals",
     "name": "HPT - Pharmaceuticals",
     "apiUrls": ["/orgs/MOH-KENYA/sources/PPB_P/"],
-    "icon": "xray",
+    "icon": "tabs",
     "metadata": {
       "subdomainQueryParam": "conceptClass=Subdomain",
       "cascadeQueryParam": "$cascade/?view=hierarchy&reverse=true&includeRetired=false"
