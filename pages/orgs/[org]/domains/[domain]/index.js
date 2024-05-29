@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { getResource } from "@/utilities";
 import {
   Box,
@@ -27,7 +28,6 @@ import {
 } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import Link from "next/link";
 import { ArrowRight, ArrowRightAlt, SearchRounded } from "@mui/icons-material";
@@ -47,10 +47,10 @@ function OrgDomainsList() {
   const [total_pages, setTotalPages] = useState(1);
   const indexOfLastConcept = page * rowsPerPage;
   const indexOfFirstConcept = indexOfLastConcept - rowsPerPage;
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [source, setSource] = React.useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [source, setSource] = useState("");
 
-  const [subdomainMenuAnchor, setSubdomainMenuAnchor] = React.useState(null);
+  const [subdomainMenuAnchor, setSubdomainMenuAnchor] = useState(null);
   const subdomainMenuOpen = Boolean(subdomainMenuAnchor);
 
   const fetchConcepts = (subdomain) => {
@@ -142,6 +142,7 @@ function OrgDomainsList() {
         setIsLoading(false);
       });
   };
+
   useEffect(() => {
     let mounted = true;
 
@@ -418,17 +419,25 @@ function OrgDomainsList() {
                   <>
                     {currentConcepts && currentConcepts.length > 0 ? (
                       <Box>
-                        <Typography
-                          variant="h5"
-                          sx={{ m: "8px 5px", fontWeight: "bold" }}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
                         >
-                          {(selectedSubdomain &&
-                            subDomainData?.find((sd) => {
-                              return sd && sd.id == selectedSubdomain;
-                            })?.display_name) ||
-                            ""}{" "}
-                          Concepts:{" "}
-                        </Typography>
+                          <Typography
+                            variant="h5"
+                            sx={{ m: "8px 5px", fontWeight: "bold" }}
+                          >
+                            {(selectedSubdomain &&
+                              subDomainData?.find((sd) => {
+                                return sd && sd.id == selectedSubdomain;
+                              })?.display_name) ||
+                              ""}{" "}
+                            Concepts:
+                          </Typography>
+                        </div>{" "}
                         <Divider />
                         <Box
                           sx={{
@@ -437,13 +446,14 @@ function OrgDomainsList() {
                           }}
                         >
                           <TableContainer>
-                            <Table>
+                            <Table sx={{ fontFamily: "Arial, sans-serif" }}>
                               <TableHead>
-                                <TableRow>
+                                <TableRow sx={{ backgroundColor: "#f0f0f0" }}>
                                   <TableCell
                                     sx={{
                                       fontWeight: "bold",
                                       textTransform: "uppercase",
+                                      padding: "12px",
                                     }}
                                   >
                                     #
@@ -452,6 +462,7 @@ function OrgDomainsList() {
                                     sx={{
                                       fontWeight: "bold",
                                       textTransform: "uppercase",
+                                      padding: "12px",
                                     }}
                                   >
                                     ID
@@ -460,6 +471,7 @@ function OrgDomainsList() {
                                     sx={{
                                       fontWeight: "bold",
                                       textTransform: "uppercase",
+                                      padding: "12px",
                                     }}
                                   >
                                     Display Name
@@ -468,6 +480,7 @@ function OrgDomainsList() {
                                     sx={{
                                       fontWeight: "bold",
                                       textTransform: "uppercase",
+                                      padding: "12px",
                                     }}
                                   >
                                     Concept Class
@@ -476,62 +489,88 @@ function OrgDomainsList() {
                                     sx={{
                                       fontWeight: "bold",
                                       textTransform: "uppercase",
+                                      padding: "12px",
                                     }}
                                   >
-                                    UUID
+                                    Version
                                   </TableCell>
                                   <TableCell
                                     sx={{
                                       fontWeight: "bold",
                                       textTransform: "uppercase",
+                                      padding: "12px",
                                     }}
                                   >
-                                    Version
+                                    UUID
                                   </TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
                                 {currentConcepts
-                                  ?.filter((c) => c.type == "Concept")
+                                  ?.filter((c) => c.type === "Concept")
                                   ?.map((concept, index) => (
                                     <TableRow
                                       key={concept.id}
                                       sx={{
                                         ":hover": {
-                                          backgroundColor: "#f5f5f5",
+                                          backgroundColor: "#D1EEF3",
                                           cursor: "pointer",
                                         },
+                                        transition:
+                                          "background-color 0.3s ease",
                                       }}
                                       onClick={() => {
                                         router.push(concept.url);
                                       }}
                                     >
-                                      <TableCell>
-                                        {" "}
+                                      <TableCell
+                                        sx={{
+                                          padding: "12px",
+                                          fontWeight: 500,
+                                        }}
+                                      >
+                                        {/* Added conditional numbering */}
                                         {page > 1
                                           ? (page - 1) * rowsPerPage +
                                             (index + 1)
-                                          : index + 1}{" "}
+                                          : index + 1}
                                       </TableCell>
-                                      <TableCell sx={{ fontWeight: "bold" }}>
-                                        {" "}
-                                        {concept.id}{" "}
+                                      <TableCell
+                                        sx={{
+                                          padding: "12px",
+                                          fontWeight: 600,
+                                        }}
+                                      >
+                                        {concept.id}
                                       </TableCell>
-                                      <TableCell sx={{ fontSize: "1em" }}>
-                                        {" "}
-                                        {concept.display_name}{" "}
+                                      <TableCell
+                                        sx={{
+                                          padding: "12px",
+                                          fontSize: "1rem",
+                                        }}
+                                      >
+                                        {concept.display_name}
                                       </TableCell>
-                                      <TableCell>
-                                        {" "}
-                                        {concept.concept_class}{" "}
+                                      <TableCell sx={{ padding: "12px" }}>
+                                        {concept.concept_class}
                                       </TableCell>
-                                      <TableCell> {concept.version} </TableCell>
-                                      <TableCell> {concept.uuid} </TableCell>
+                                      <TableCell sx={{ padding: "12px" }}>
+                                        {concept.version}
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          padding: "12px",
+                                          fontFamily: "monospace",
+                                        }}
+                                      >
+                                        {concept.uuid}
+                                      </TableCell>
                                     </TableRow>
                                   ))}
                               </TableBody>
                             </Table>
                           </TableContainer>
+
                           <Box
                             sx={{
                               display: "flex",
