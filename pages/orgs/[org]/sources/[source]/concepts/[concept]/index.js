@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { doGetSession } from "@/utilities";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import {
@@ -15,7 +14,6 @@ import {
   TableRow,
   Typography,
   Skeleton,
-  Checkbox,
   TablePagination,
   Paper,
 } from "@mui/material";
@@ -31,17 +29,6 @@ function ConceptDetail() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-
-  //this is to ensure that only logged in users can download
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      const sessionData = await doGetSession();
-      setIsLoggedIn(sessionData !== null);
-    };
-
-    checkLoginStatus();
-  }, []);
 
   const { org, source, concept } = router.query;
   const {
@@ -67,13 +54,6 @@ function ConceptDetail() {
   const [descriptionsDialogOpen, setDescriptionsDialogOpen] =
     React.useState(false);
 
-  const handleCheckboxChange = (event, entry) => {
-    if (event.target.checked) {
-      setSelectedRows([...selectedRows, entry]);
-    } else {
-      setSelectedRows(selectedRows.filter((row) => row !== entry));
-    }
-  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -89,28 +69,6 @@ function ConceptDetail() {
   const attributesCount = conceptDetail?.extras
     ? Object.keys(conceptDetail.extras).length
     : 0;
-  const handleDownload = () => {
-    const csvContent = [
-      ["Relationship", "Code", "Name", "Source"],
-      ...selectedRows.map((entry) => [
-        entry.map_type,
-        entry.to_concept_code,
-        entry.cascade_target_concept_name,
-        entry.cascade_target_source_name,
-      ]),
-    ]
-      .map((e) => e.join(","))
-      .join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "selected_rows.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   if (isLoading) {
     return (
@@ -499,16 +457,6 @@ function ConceptDetail() {
               >
                 Relationships / Associated
               </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={handleDownload}
-                disabled={selectedRows.length === 0}
-                sx={{ ml: 2, display: isLoggedIn ? "inline-block" : "none" }}
-              >
-                Download Selected
-              </Button>
             </Box>
             {conceptDetail?.mappings && conceptDetail?.mappings.length > 0 ? (
               <>
@@ -555,13 +503,6 @@ function ConceptDetail() {
                             key={index}
                             sx={{ "&:hover": { backgroundColor: "#f5f5f5" } }}
                           >
-                            <TableCell padding="checkbox">
-                              <Checkbox
-                                onChange={(event) =>
-                                  handleCheckboxChange(event, entry)
-                                }
-                              />
-                            </TableCell>
                             <TableCell>{entry.map_type}</TableCell>
                             <TableCell
                               onClick={(ev) => {

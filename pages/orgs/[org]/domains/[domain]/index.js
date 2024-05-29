@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getResource, doGetSession } from "@/utilities";
+import { getResource } from "@/utilities";
 import {
   Box,
   Drawer,
@@ -49,54 +49,9 @@ function OrgDomainsList() {
   const indexOfFirstConcept = indexOfLastConcept - rowsPerPage;
   const [searchTerm, setSearchTerm] = useState("");
   const [source, setSource] = useState("");
-  const [downloadFormat, setDownloadFormat] = useState("csv");
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const [subdomainMenuAnchor, setSubdomainMenuAnchor] = useState(null);
   const subdomainMenuOpen = Boolean(subdomainMenuAnchor);
-
-  function convertArrayOfObjectsToCSV(array) {
-    let csv = "";
-    csv += "ID,Display Name,Concept Class,Version,UUID\n";
-    array.forEach((item) => {
-      csv += `${item.id},${item.display_name},${item.concept_class},${item.version},${item.uuid}\n`;
-    });
-    return csv;
-  }
-
-  function downloadCSV(csvData) {
-    const blob = new Blob([csvData], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "concept_data.csv";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  }
-  function downloadJSON(jsonData) {
-    const blob = new Blob([JSON.stringify(jsonData, null, 2)], {
-      type: "application/json",
-    });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "concept_data.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  }
-
-  function handleDownloadClick() {
-    if (downloadFormat === "csv") {
-      const csvData = convertArrayOfObjectsToCSV(currentConcepts);
-      downloadCSV(csvData);
-    } else if (downloadFormat === "json") {
-      downloadJSON(currentConcepts);
-    }
-  }
 
   const fetchConcepts = (subdomain) => {
     setIsLoadingConcepts(true);
@@ -187,15 +142,6 @@ function OrgDomainsList() {
         setIsLoading(false);
       });
   };
-  //this is to ensure that only logged in users can download
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      const sessionData = await doGetSession();
-      setIsLoggedIn(sessionData !== null);
-    };
-
-    checkLoginStatus();
-  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -491,34 +437,6 @@ function OrgDomainsList() {
                               ""}{" "}
                             Concepts:
                           </Typography>
-                          {isLoggedIn && (
-                            <Box
-                              sx={{
-                                display: "flex",
-                                gap: 1,
-                                alignItems: "center",
-                              }}
-                            >
-                              <Select
-                                value={downloadFormat}
-                                onChange={(e) =>
-                                  setDownloadFormat(e.target.value)
-                                }
-                                displayEmpty
-                                sx={{ minWidth: 120 }}
-                              >
-                                <MenuItem value="csv">CSV</MenuItem>
-                                <MenuItem value="json">JSON</MenuItem>
-                              </Select>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleDownloadClick}
-                              >
-                                Download Concepts
-                              </Button>
-                            </Box>
-                          )}
                         </div>{" "}
                         <Divider />
                         <Box
