@@ -448,7 +448,7 @@ function OrgDomainsList() {
                           <TableContainer>
                             <Table sx={{ fontFamily: "Arial, sans-serif" }}>
                               <TableHead>
-                                <TableRow sx={{ backgroundColor: "#f0f0f0" }}>
+                                <TableRow sx={{ backgroundColor: "#D1EEF3" }}>
                                   <TableCell
                                     sx={{
                                       fontWeight: "bold",
@@ -513,7 +513,7 @@ function OrgDomainsList() {
                                       key={concept.id}
                                       sx={{
                                         ":hover": {
-                                          backgroundColor: "#D1EEF3",
+                                          backgroundColor: "#f5f5f5",
                                           cursor: "pointer",
                                         },
                                         transition:

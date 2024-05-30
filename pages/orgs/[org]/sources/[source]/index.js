@@ -364,7 +364,7 @@ function SourceConcepts() {
               <div style={{ width: "100%" }}>
                 <TableContainer>
                   <Table>
-                    <TableHead sx={{ backgroundColor: "#C4C6C6" }}>
+                    <TableHead sx={{ backgroundColor: "#D1EEF3" }}>
                       <TableRow>
                         <TableCell
                           sx={{
@@ -461,7 +461,7 @@ function SourceConcepts() {
                               backgroundColor: "rgba(0, 0, 0, 0.1)",
                             },
                             ...(selectedRows.includes(row.id) && {
-                              backgroundColor: "#80DCEF",
+                              backgroundColor: "#ECF8F8",
                             }),
                           }}
                         >
