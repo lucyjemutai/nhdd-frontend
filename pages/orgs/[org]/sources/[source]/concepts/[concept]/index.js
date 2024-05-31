@@ -467,11 +467,6 @@ function ConceptDetail() {
                         <TableCell
                           sx={{ fontWeight: "bold", color: "PrimaryText" }}
                         >
-                          Select
-                        </TableCell>
-                        <TableCell
-                          sx={{ fontWeight: "bold", color: "PrimaryText" }}
-                        >
                           Relationship
                         </TableCell>
                         <TableCell
@@ -524,7 +519,7 @@ function ConceptDetail() {
                               }}
                               sx={{ color: "#1651B6", cursor: "pointer" }}
                             >
-                              {entry.cascade_target_concept_name}
+                              {entry.to_concept_name}
                             </TableCell>
                             <TableCell
                               onClick={(ev) => {
@@ -533,7 +528,7 @@ function ConceptDetail() {
                               }}
                               sx={{ cursor: "pointer" }}
                             >
-                              {entry.cascade_target_source_name}
+                              {entry.to_source_name}
                             </TableCell>
                           </TableRow>
                         ))}
