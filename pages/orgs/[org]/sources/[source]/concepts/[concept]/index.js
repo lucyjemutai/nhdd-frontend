@@ -395,7 +395,9 @@ function ConceptDetail() {
                               </a>
                             ) : (
                               <Typography color="textPrimary">
-                                {conceptDetail?.extras[key]}
+                                {typeof conceptDetail?.extras[key] === "boolean" ?
+                                    String(conceptDetail?.extras[key])[0].toUpperCase() +
+                                    String(conceptDetail?.extras[key]).slice(1) : conceptDetail?.extras[key]}
                               </Typography>
                             )
                           ) : (
