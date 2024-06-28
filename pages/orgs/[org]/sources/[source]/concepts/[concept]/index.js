@@ -380,7 +380,8 @@ function ConceptDetail() {
                           {typeof conceptDetail?.extras[key] === "string" ||
                           typeof conceptDetail?.extras[key] === "number" ||
                           typeof conceptDetail?.extras[key] === "boolean" ? (
-                            conceptDetail?.extras[key]?.startsWith("http") ? (
+                              typeof conceptDetail?.extras[key] === "string"
+                                && conceptDetail?.extras[key]?.startsWith("http") ? (
                               <a
                                 href={conceptDetail?.extras[key]}
                                 target="_blank"
