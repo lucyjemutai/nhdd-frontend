@@ -52,7 +52,7 @@
   {
     "id": "billing",
     "name": "Billing & eClaims Management",
-    "apiUrls": ["/orgs/MOH-KENYA/sources/DDH/"],
+    "apiUrls": ["/orgs/MOH-KENYA/sources/BILL/"],
     "icon": "bill",
     "metadata": {
       "subdomainQueryParam": "conceptClass=Subdomain",
