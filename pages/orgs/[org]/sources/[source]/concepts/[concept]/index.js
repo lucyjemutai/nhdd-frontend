@@ -18,11 +18,25 @@ import {
   Paper,
 } from "@mui/material";
 import Link from "next/link";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import IconButton from "@mui/material/IconButton";
 import {
   getConceptDetail,
   getConceptVersions,
   getConceptRelated,
 } from "../../../../../../api/conceptDetail";
+
+const handleCopyLink = async (org, source, conceptDetail) => {
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+  const currentUrl = `${API_BASE_URL}/orgs/${org}/sources/${source}/concepts/${conceptDetail.id}`;
+
+  try {
+    await navigator.clipboard.writeText(currentUrl);
+    console.log("URL copied to clipboard");
+  } catch (err) {
+    console.error("Failed to copy URL: ", err);
+  }
+};
 
 function ConceptDetail() {
   const router = useRouter();
@@ -160,15 +174,31 @@ function ConceptDetail() {
               {" "}
               {source}{" "}
             </Link>
-            <span
-              title="Concept ID"
-              className="breadcrumb-item"
-              style={{ textDecoration: "none", color: "#777" }}
-            >
-              {" "}
-              {conceptDetail.id} | {conceptDetail.concept_class} |{" "}
-              {conceptDetail.datatype}
-            </span>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <span
+                title="Concept ID"
+                className="breadcrumb-item"
+                style={{ textDecoration: "none", color: "#777" }}
+              >
+                {" "}
+                {conceptDetail.id} | {conceptDetail.concept_class} |{" "}
+                {conceptDetail.datatype}
+              </span>
+
+              <IconButton
+                edge="end"
+                aria-label="copy link"
+                size="small"
+                onClick={() => {
+                  handleCopyLink(org, source, conceptDetail);
+                }}
+              >
+                <ContentCopyIcon fontSize="small" />
+              </IconButton>
+              <Typography variant="body2" color="#FF5733" ml={1}>
+                Copy Link
+              </Typography>
+            </Box>
           </Box>
 
           {/* Names */}
@@ -380,8 +410,8 @@ function ConceptDetail() {
                           {typeof conceptDetail?.extras[key] === "string" ||
                           typeof conceptDetail?.extras[key] === "number" ||
                           typeof conceptDetail?.extras[key] === "boolean" ? (
-                              typeof conceptDetail?.extras[key] === "string"
-                                && conceptDetail?.extras[key]?.startsWith("http") ? (
+                            typeof conceptDetail?.extras[key] === "string" &&
+                            conceptDetail?.extras[key]?.startsWith("http") ? (
                               <a
                                 href={conceptDetail?.extras[key]}
                                 target="_blank"
@@ -395,9 +425,12 @@ function ConceptDetail() {
                               </a>
                             ) : (
                               <Typography color="textPrimary">
-                                {typeof conceptDetail?.extras[key] === "boolean" ?
-                                    String(conceptDetail?.extras[key])[0].toUpperCase() +
-                                    String(conceptDetail?.extras[key]).slice(1) : conceptDetail?.extras[key]}
+                                {typeof conceptDetail?.extras[key] === "boolean"
+                                  ? String(
+                                      conceptDetail?.extras[key]
+                                    )[0].toUpperCase() +
+                                    String(conceptDetail?.extras[key]).slice(1)
+                                  : conceptDetail?.extras[key]}
                               </Typography>
                             )
                           ) : (
