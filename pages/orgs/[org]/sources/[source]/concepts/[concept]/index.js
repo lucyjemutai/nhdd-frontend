@@ -491,7 +491,7 @@ function ConceptDetail() {
                 color="text.primary"
                 gutterBottom
               >
-                Relationships / Associatedddd
+                Relationships / Associated
               </Typography>
             </Box>
             {conceptDetail?.mappings && conceptDetail?.mappings.length > 0 ? (
