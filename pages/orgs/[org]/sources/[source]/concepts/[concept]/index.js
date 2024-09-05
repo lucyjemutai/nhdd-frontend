@@ -716,6 +716,9 @@ function ConceptDetail() {
                   <TableCell sx={{ textTransform: "uppercase" }}>
                     Concept
                   </TableCell>
+                  <TableCell sx={{ textTransform: "uppercase" }}>
+                    Source
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -754,6 +757,14 @@ function ConceptDetail() {
                               })}
                             </details>
                           )}
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            href={`/orgs/${org}/sources/${source}`}
+                            style={{ textDecoration: "none" }}
+                          >
+                            {source}
+                          </Link>
                         </TableCell>
                       </TableRow>
                     );
