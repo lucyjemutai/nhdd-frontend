@@ -71,7 +71,12 @@ function ConceptDetail() {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
+  const [isClicked, setIsClicked] = useState(false);
+  const handleCopyLinkClick = () => {
+    handleCopyLink(org, source, conceptDetail);
+    setIsClicked(true);
+    setTimeout(() => setIsClicked(false), 3000);
+  };
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -189,13 +194,19 @@ function ConceptDetail() {
                 edge="end"
                 aria-label="copy link"
                 size="small"
-                onClick={() => {
-                  handleCopyLink(org, source, conceptDetail);
-                }}
+                onClick={handleCopyLinkClick}
               >
                 <ContentCopyIcon fontSize="small" />
               </IconButton>
-              <Typography variant="body2" color="#FF5733" ml={1}>
+              <Typography
+                variant="body2"
+                ml={1}
+                onClick={handleCopyLinkClick}
+                style={{
+                  cursor: "pointer",
+                  color: isClicked ? "#4CAF50" : "#FF5733",
+                }}
+              >
                 Copy Link
               </Typography>
             </Box>
@@ -716,6 +727,9 @@ function ConceptDetail() {
                   <TableCell sx={{ textTransform: "uppercase" }}>
                     Concept
                   </TableCell>
+                  <TableCell sx={{ textTransform: "uppercase" }}>
+                    Source
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -754,6 +768,14 @@ function ConceptDetail() {
                               })}
                             </details>
                           )}
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            href={`/orgs/${org}/sources/${source}`}
+                            style={{ textDecoration: "none" }}
+                          >
+                            {source}
+                          </Link>
                         </TableCell>
                       </TableRow>
                     );
