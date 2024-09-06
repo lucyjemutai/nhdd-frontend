@@ -205,24 +205,6 @@ function ResourcesKnhts() {
               textAlign: "left",
             }}
           >
-            <li style={{ marginBottom: "20px" }}>
-              <Link
-                href="/api/file-download/?filename=kenya-national-ehealth-policy-2016-2030.pdf"
-                download
-              >
-                Kenya National eHealth Policy 2016-2030{" "}
-              </Link>
-            </li>
-          </ul>
-          <ul
-            style={{
-              fontSize: "1.2em",
-              lineHeight: "1.5",
-              listStyle: "circle",
-              paddingLeft: "30px",
-              textAlign: "left",
-            }}
-          >
             {uploadedFiles.map((file, index) => (
               <li key={index} style={{ marginBottom: "20px" }}>
                 <a href={URL.createObjectURL(file)} download>
