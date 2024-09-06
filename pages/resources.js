@@ -187,8 +187,7 @@ function ResourcesKnhts() {
                 href="/api/file-download/?filename=DRAFT Kenya HIS Certification Framework - Draft 06FEB2017_KJO-edits_clean (3).pdf"
                 download
               >
-                DRAFT Kenya HIS Certification Framework - Draft
-                06FEB2017_KJO-edits_clean{" "}
+                DRAFT Kenya HIS Certification Framework{" "}
               </Link>
             </li>
           </ul>
