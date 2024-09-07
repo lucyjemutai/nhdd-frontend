@@ -187,8 +187,7 @@ function ResourcesKnhts() {
                 href="/api/file-download/?filename=DRAFT Kenya HIS Certification Framework - Draft 06FEB2017_KJO-edits_clean (3).pdf"
                 download
               >
-                DRAFT Kenya HIS Certification Framework - Draft
-                06FEB2017_KJO-edits_clean{" "}
+                DRAFT Kenya HIS Certification Framework{" "}
               </Link>
             </li>
           </ul>
@@ -197,24 +196,6 @@ function ResourcesKnhts() {
               {uploadError}
             </div>
           )}
-          <ul
-            style={{
-              fontSize: "1.2em",
-              lineHeight: "1.5",
-              listStyle: "circle",
-              paddingLeft: "30px",
-              textAlign: "left",
-            }}
-          >
-            <li style={{ marginBottom: "20px" }}>
-              <Link
-                href="/api/file-download/?filename=kenya-national-ehealth-policy-2016-2030.pdf"
-                download
-              >
-                Kenya National eHealth Policy 2016-2030{" "}
-              </Link>
-            </li>
-          </ul>
           <ul
             style={{
               fontSize: "1.2em",
