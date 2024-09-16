@@ -39,7 +39,15 @@ function ResourcesKnhts() {
 
   const handleFileSelect = (event) => {
     const filesArray = Array.from(event.target.files);
-    setSelectedFiles([...selectedFiles, ...filesArray]);
+    const filteredFiles = filesArray.filter(
+      (file) => file.size <= 5 * 1024 * 1024
+    );
+
+    if (filesArray.length !== filteredFiles.length) {
+      alert("This file exceeds the maximum allowed size of 5MB.");
+    }
+
+    setSelectedFiles([...selectedFiles, ...filteredFiles]);
   };
 
   const handleFileUpload = () => {
