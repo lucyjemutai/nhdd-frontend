@@ -10,7 +10,7 @@ export default function Footer() {
         backgroundColor: "#fcfcfc",
         width: "100%",
         height: "80px",
-        position: "absolute",
+        position: "fixed",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
