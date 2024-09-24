@@ -450,7 +450,13 @@ function Login() {
                 borderRadius: "5px",
               }}
             >
-              <a href="/help">Help & Guides</a>
+              <a
+                href="https://knhts-staging.health.go.ke/moh-healthdocs/books/kenya-national-health-terminology-service"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Help & Guides
+              </a>
             </div>
           </div>
         </div>

@@ -458,9 +458,14 @@ export default function Home() {
             <Typography variant="h6" color={"#fff"}>
               {" "}
               You can submit a request for a concept to be added, or visit our{" "}
-              <Link href={"/help"} style={{ color: "skyblue" }}>
+              <Link
+                href="https://knhts-staging.health.go.ke/moh-healthdocs/books/kenya-national-health-terminology-service"
+                style={{ color: "skyblue" }}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 help &amp; support page
-              </Link>{" "}
+              </Link>
             </Typography>
           </Box>
           <Box
