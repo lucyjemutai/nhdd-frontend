@@ -31,6 +31,8 @@ import { useRouter } from "next/router";
 import Footer from "@/components/footer";
 import VerifyEmail from "@/pages/auth/verifyEmail";
 import { redirect } from "next/navigation";
+import CreateCollectionModal from "./createCollections";
+
 const inter = Inter({ subsets: ["latin"] });
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export default function Home() {
@@ -99,6 +101,20 @@ export default function Home() {
     fetchDomains();
     fetchCollections();
   }, []);
+
+  const handleCollectionCreated = (newCollection) => {
+    setCollections((prevCollections) => [
+      ...prevCollections,
+      {
+        id: newCollection.id,
+        name: newCollection.full_name,
+        owner: newCollection.owner,
+        collection_type: newCollection.collection_type,
+        created_at: new Date().toISOString(),
+      },
+    ]);
+  };
+
   return (
     <>
       <Head>
@@ -376,11 +392,16 @@ export default function Home() {
                 </TableContainer>
               </Box>
             </TabPanel>
+
             <TabPanel value="3">
               <Box
                 sx={{ flexGrow: "1", display: "flex", flexDirection: "column" }}
               >
                 <Typography variant="h4">Collections</Typography>
+                <CreateCollectionModal
+                  onCollectionCreated={handleCollectionCreated}
+                />
+
                 <TableContainer>
                   <Table>
                     <TableHead>
@@ -397,16 +418,11 @@ export default function Home() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {collections.map((coll, index) => (
+                      {collections.map((coll) => (
                         <TableRow
-                          key={index}
-                          sx={
-                            {
-                              // ":hover": { color: '#1651B6', cursor: 'pointer' }
-                            }
-                          }
-                          onClick={(e) => {
-                            router.push(coll.url);
+                          key={coll.id}
+                          onClick={() => {
+                            router.push(`/collection/${coll.id}`);
                           }}
                         >
                           <TableCell>{coll.id}</TableCell>
@@ -414,7 +430,9 @@ export default function Home() {
                           <TableCell>{coll.owner}</TableCell>
                           <TableCell>{coll.collection_type}</TableCell>
                           <TableCell>
-                            {new Date(coll.created_at).toLocaleString()}
+                            {coll.created_at
+                              ? new Date(coll.created_at).toLocaleString()
+                              : new Date().toLocaleString()}
                           </TableCell>
                         </TableRow>
                       ))}
