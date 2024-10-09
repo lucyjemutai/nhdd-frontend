@@ -177,11 +177,10 @@ function KnowledgeBase() {
                 <p></p>
                 <strong>Contact Information:</strong> For inquiries or feedback
                 regarding the data dictionary, please contact the KNHTS support
-                team at{" "}
-                <a href="mailto:abc@example.com" style={{ color: "#1651B6" }}>
+                team.{" "}
+                {/* <a href="mailto:abc@example.com" style={{ color: "#1651B6" }}>
                   abc@example.com
-                </a>
-                .
+                </a> */}
               </p>
 
               <div
@@ -195,7 +194,8 @@ function KnowledgeBase() {
                   width: "100%",
                 }}
               >
-                <h4
+                {/* TODO ADD THE CURRENT DOWNLOADABLE VERSION */}
+                {/* <h4
                   style={{
                     color: "#1651B6",
                     fontStyle: "italic",
@@ -205,8 +205,8 @@ function KnowledgeBase() {
                   }}
                 >
                   Version 1.0
-                </h4>
-                <button
+                </h4> */}
+                {/* <button
                   style={{
                     padding: "8px 15px",
                     fontSize: "0.9em",
@@ -228,7 +228,7 @@ function KnowledgeBase() {
                   }
                 >
                   Download
-                </button>
+                </button> */}
               </div>
             </div>
 
