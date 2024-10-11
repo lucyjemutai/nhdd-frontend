@@ -2,14 +2,27 @@ import React, { useState, useEffect } from "react";
 import Footer from "@/components/footer";
 import Head from "next/head";
 import Link from "next/link";
+import { doGetSession } from "@/utilities";
+import { Box, Typography } from "@mui/material";
 
 function ResourcesKnhts() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+    const checkLoginStatus = async () => {
+      const sessionData = await doGetSession();
+      setIsLoggedIn(sessionData !== null);
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  useEffect(() => {
+    //TODO,
     // Initialize IndexedDB database
     const request = indexedDB.open("uploadedFilesDB", 1);
 
@@ -230,17 +243,25 @@ function ResourcesKnhts() {
             </div>
           )}
           <br />
-          <p style={{ fontSize: "1.0em", color: "#777", marginTop: "5px" }}>
-            You can also add resources by uploading files.
-          </p>
+          <div>
+            {isLoggedIn && (
+              <Box>
+                <Typography
+                  style={{ fontSize: "1.0em", color: "#777", marginTop: "5px" }}
+                >
+                  You can also add resources by uploading files.
+                </Typography>
 
-          <input type="file" onChange={handleFileSelect} multiple />
-          <button
-            onClick={handleFileUpload}
-            disabled={selectedFiles.length === 0}
-          >
-            Upload
-          </button>
+                <input type="file" onChange={handleFileSelect} multiple />
+                <button
+                  onClick={handleFileUpload}
+                  disabled={selectedFiles.length === 0}
+                >
+                  Upload
+                </button>
+              </Box>
+            )}
+          </div>
         </div>
       </div>
       <Footer />
