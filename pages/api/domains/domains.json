@@ -30,8 +30,18 @@
     }
   },
   {
-    "id": "diagnostic-services",
-    "name": "Diagnostic Services (Lab and Imaging)",
+    "id": "diagnostic-services-lab",
+    "name": "Diagnostic Services (Lab)",
+    "apiUrls": ["/orgs/MOH-KENYA/sources/NPHL/"],
+    "icon": "devices",
+    "metadata": {
+      "subdomainQueryParam": "conceptClass=Subdomain",
+      "cascadeQueryParam": "$cascade/?view=hierarchy&reverse=true&includeRetired=false"
+    }
+  },
+  {
+    "id": "diagnostic-services-imagin",
+    "name": "Diagnostic Services (Imaging)",
     "apiUrls": ["/orgs/MOH-KENYA/sources/NPHL/"],
     "icon": "microscope2",
     "metadata": {
@@ -82,21 +92,21 @@
   {
     "id": "hpt-non-pharmaceuticals",
     "name": "HPT - Medical Devices",
-    "apiUrls": ["/orgs/MOH-KENYA/sources/PPB_NP/"],
+    "apiUrls": ["/orgs/MOH-KENYA/sources/PPB/"],
     "icon": "xray",
     "metadata": {
-      "subdomainQueryParam": "conceptClass=Subdomain&limit=500",
-      "cascadeQueryParam": "$cascade/?view=hierarchy&reverse=true&includeRetired=false"
+      "subdomainQueryParam": "id=10-00000-02&conceptClass=domain&limit=500",
+      "cascadeQueryParam": "10-00000-02/cascade/?view=hierarchy&reverse=true&includeRetired=false"
     }
   },
   {
     "id": "hpt-pharmaceuticals",
     "name": "HPT - Pharmaceuticals",
-    "apiUrls": ["/orgs/MOH-KENYA/sources/PPB_P/"],
+    "apiUrls": ["/orgs/MOH-KENYA/sources/PPB/"],
     "icon": "tabs",
     "metadata": {
-      "subdomainQueryParam": "conceptClass=Subdomain&limit=500",
-      "cascadeQueryParam": "$cascade/?view=hierarchy&reverse=true&includeRetired=false"
+      "subdomainQueryParam": "id=10-00000-01&conceptClass=domain&limit=500",
+      "cascadeQueryParam": "10-00000-01/cascade/?view=hierarchy&reverse=true&includeRetired=false"
     }
   },
   {
