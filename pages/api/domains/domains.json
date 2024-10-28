@@ -105,7 +105,7 @@
     "apiUrls": ["/orgs/MOH-KENYA/sources/PPB/"],
     "icon": "tabs",
     "metadata": {
-      "subdomainQueryParam": "id=10-00000-01&conceptClass=domain&limit=500",
+      "subdomainQueryParam": "id=10-00000-01&conceptClass=subDomain&limit=500",
       "cascadeQueryParam": "10-00000-01/cascade/?view=hierarchy&reverse=true&includeRetired=false"
     }
   },
