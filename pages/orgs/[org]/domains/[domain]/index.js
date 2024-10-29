@@ -53,6 +53,8 @@ function OrgDomainsList() {
   const [subdomainMenuAnchor, setSubdomainMenuAnchor] = useState(null);
   const subdomainMenuOpen = Boolean(subdomainMenuAnchor);
 
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const fetchConcepts = (subdomain) => {
     setIsLoadingConcepts(true);
     setIsLoading(true);
@@ -108,39 +110,86 @@ function OrgDomainsList() {
   };
 
   const fetchDomainData = (page = 1) => {
-    fetch("/api/domains/" + domain + "?includeConcepts=true&page=" + page)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data) {
-          setDomainData(data);
-          setSubDomainData(data.data?.subdomains);
-          let filteredConcepts = data?.data?.concepts?.filter(
-            (concept) => concept.type === "Concept"
-          );
-          if (data?.data?.subdomains && data?.data?.subdomains.length > 0) {
-            setSelectedSubdomain(data?.data?.subdomains[0]?.url);
-            fetchConcepts(data?.data?.subdomains[0]?.url);
-          } else {
-            setConcepts(filteredConcepts);
-            setCurrentConcepts(filteredConcepts);
-            setIsLoadingConcepts(false);
+    // Check if the domain ID is `hpt-non-pharmaceuticals` or `hpt-pharmaceuticals`
+    let cascadeUrl = null;
+
+    if (domain === "hpt-non-pharmaceuticals") {
+      // Use cascade query URL for HPT-non-pharmaceuticals
+      cascadeUrl = `${API_BASE_URL}/orgs/MOH-KENYA/sources/PPB/concepts/10-00000-02/$cascade/?cascadeLevels=1&method=sourceToConcepts&view=hierarchy&reverse=true&includeRetired=false`;
+    } else if (domain === "hpt-pharmaceuticals") {
+      // Use cascade query URL for HPT-pharmaceuticals
+      cascadeUrl = `${API_BASE_URL}/orgs/MOH-KENYA/sources/PPB/concepts/10-00000-01/$cascade/?cascadeLevels=1&method=sourceToConcepts&view=hierarchy&reverse=true&includeRetired=false`;
+    }
+
+    if (cascadeUrl) {
+      fetch(cascadeUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
           }
-          setTotalPages(data?.data?.conceptsMeta?.pagecount ?? 1);
-          setRowsPerPage(data?.data?.conceptsMeta?.pagesize ?? 20);
-          setPage(data?.data?.conceptsMeta?.currentpage ?? 1);
-        }
-      })
-      .catch((err) => {
-        console.error("error::", err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+          return response.json();
+        })
+        .then((data) => {
+          if (data && data.entry) {
+            // Set subdomains from API response
+            const dynamicSubdomains = data.entry.entries.map((entry) => ({
+              id: entry.id,
+              display_name: entry.display_name,
+              url: entry.url,
+            }));
+
+            setSubDomainData(dynamicSubdomains);
+
+            if (dynamicSubdomains.length > 0) {
+              setSelectedSubdomain(dynamicSubdomains[0].url);
+              fetchConcepts(dynamicSubdomains[0].url);
+            }
+          } else {
+            setSubDomainData([]);
+          }
+        })
+        .catch((err) => {
+          console.error("error::", err);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      // Default data fetching for other domains
+      fetch("/api/domains/" + domain + "?includeConcepts=true&page=" + page)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data) {
+            setDomainData(data);
+            setSubDomainData(data.data?.subdomains); // Set default subdomains
+            let filteredConcepts = data?.data?.concepts?.filter(
+              (concept) => concept.type === "Concept"
+            );
+            if (data?.data?.subdomains && data?.data?.subdomains.length > 0) {
+              setSelectedSubdomain(data?.data?.subdomains[0]?.url);
+              fetchConcepts(data?.data?.subdomains[0]?.url);
+            } else {
+              setConcepts(filteredConcepts);
+              setCurrentConcepts(filteredConcepts);
+              setIsLoadingConcepts(false);
+            }
+            setTotalPages(data?.data?.conceptsMeta?.pagecount ?? 1);
+            setRowsPerPage(data?.data?.conceptsMeta?.pagesize ?? 20);
+            setPage(data?.data?.conceptsMeta?.currentpage ?? 1);
+          }
+        })
+        .catch((err) => {
+          console.error("error::", err);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
   };
 
   useEffect(() => {
