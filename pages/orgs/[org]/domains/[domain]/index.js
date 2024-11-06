@@ -144,6 +144,12 @@ function OrgDomainsList() {
               setSelectedSubdomain(dynamicSubdomains[0].url);
               fetchConcepts(dynamicSubdomains[0].url);
             }
+            const filteredConcepts = data?.entry?.entries?.filter(
+              (concept) => concept.type === "Concept"
+            );
+            setConcepts(filteredConcepts);
+            setCurrentConcepts(filteredConcepts);
+            setIsLoadingConcepts(false);
           } else {
             setSubDomainData([]);
           }
