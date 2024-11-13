@@ -308,10 +308,15 @@ export default function Home() {
                                 <span
                                   style={{ fontWeight: "500", color: "black" }}
                                 >
-                                  {new Intl.NumberFormat().format(
+                                  {Number.isFinite(
                                     domain.sources_data[0]?.summary
                                       ?.active_concepts
-                                  ) || 0}
+                                  )
+                                    ? new Intl.NumberFormat().format(
+                                        domain.sources_data[0]?.summary
+                                          ?.active_concepts
+                                      )
+                                    : 0}
                                 </span>
                               </Box>
                             </Box>
