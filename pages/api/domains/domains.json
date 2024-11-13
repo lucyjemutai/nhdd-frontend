@@ -42,7 +42,7 @@
   {
     "id": "diagnostic-services-imagin",
     "name": "Diagnostic Services (Imaging)",
-    "apiUrls": ["/orgs/MOH-KENYA/sources/NPHL/"],
+    "apiUrls": ["/orgs/MOH-KENYA/sources/"],
     "icon": "microscope2",
     "metadata": {
       "subdomainQueryParam": "conceptClass=Subdomain",
