@@ -490,7 +490,7 @@ function OrgDomainsList() {
                                 return sd && sd.id == selectedSubdomain;
                               })?.display_name) ||
                               ""}{" "}
-                            Concepts:
+                            Concept:
                           </Typography>
                         </div>{" "}
                         <Divider />
@@ -531,64 +531,67 @@ function OrgDomainsList() {
                                   >
                                     Display Name
                                   </TableCell>
+                               {currentConcepts.some((concept) => concept.concept_class) && (
                                   <TableCell
-                                    sx={{
-                                      fontWeight: "bold",
-                                      textTransform: "uppercase",
-                                      padding: "12px",
-                                    }}
-                                  >
-                                    Concept Class
-                                  </TableCell>
+                                  sx={{
+                                    fontWeight: "bold",
+                                    textTransform: "uppercase",
+                                    padding: "12px",
+                                  }}
+                                >
+                                  Concept Class
+                                </TableCell>
+                               )}
+                               {currentConcepts.some((concept) => concept.version) && (
                                   <TableCell
-                                    sx={{
-                                      fontWeight: "bold",
-                                      textTransform: "uppercase",
-                                      padding: "12px",
-                                    }}
-                                  >
-                                    Version
-                                  </TableCell>
+                                  sx={{
+                                    fontWeight: "bold",
+                                    textTransform: "uppercase",
+                                    padding: "12px",
+                                  }}
+                                >
+                                  Version
+                                </TableCell>
+                              )}
+                             {currentConcepts.some((concept) => concept.uuid) && (
                                   <TableCell
-                                    sx={{
-                                      fontWeight: "bold",
-                                      textTransform: "uppercase",
-                                      padding: "12px",
-                                    }}
-                                  >
-                                    UUID
-                                  </TableCell>
+                                  sx={{
+                                    fontWeight: "bold",
+                                    textTransform: "uppercase",
+                                    padding: "12px",
+                                  }}
+                                >
+                                  UUID
+                                </TableCell>
+                              )}
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {currentConcepts
-                                  ?.filter((c) => c.type === "Concept")
-                                  ?.map((concept, index) => (
-                                    <TableRow
+                            {currentConcepts?.map((concept, index) => (
+                              <TableRow
                                       key={concept.id}
                                       sx={{
                                         ":hover": {
                                           backgroundColor: "#f5f5f5",
                                           cursor: "pointer",
                                         },
-                                        transition:
-                                          "background-color 0.3s ease",
-                                      }}
-                                      onClick={() => {
-                                        router.push(concept.url);
-                                      }}
-                                    >
-                                      <TableCell
-                                        sx={{
-                                          padding: "12px",
-                                          fontWeight: 500,
-                                        }}
-                                      >
-                                        {/* Added conditional numbering */}
-                                        {page > 1
-                                          ? (page - 1) * rowsPerPage +
-                                            (index + 1)
-                                          : index + 1}
+                             transition:
+                              "background-color 0.3s ease",
+                            }}
+                            onClick={() => {
+                              router.push(concept.url);
+                            }}
+                          >
+                            <TableCell
+                              sx={{
+                                padding: "12px",
+                                fontWeight: 500,
+                              }}
+                            >
+                              {/* Added conditional numbering */}
+                              {page > 1
+                                 ? (page - 1) * rowsPerPage + (index + 1)
+                                   : index + 1}
                                       </TableCell>
                                       <TableCell
                                         sx={{
@@ -606,12 +609,17 @@ function OrgDomainsList() {
                                       >
                                         {concept.display_name}
                                       </TableCell>
+                              {concept.concept_class && (
                                       <TableCell sx={{ padding: "12px" }}>
                                         {concept.concept_class}
                                       </TableCell>
+                              )}
+                                  {concept.version && (
                                       <TableCell sx={{ padding: "12px" }}>
                                         {concept.version}
                                       </TableCell>
+                              )}
+                                    {concept.uuid && (
                                       <TableCell
                                         sx={{
                                           padding: "12px",
@@ -620,7 +628,8 @@ function OrgDomainsList() {
                                       >
                                         {concept.uuid}
                                       </TableCell>
-                                    </TableRow>
+                              )}
+                                   </TableRow>
                                   ))}
                               </TableBody>
                             </Table>
