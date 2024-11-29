@@ -490,7 +490,7 @@ function OrgDomainsList() {
                                 return sd && sd.id == selectedSubdomain;
                               })?.display_name) ||
                               ""}{" "}
-                            Concept:
+                            Concepts:
                           </Typography>
                         </div>{" "}
                         <Divider />
